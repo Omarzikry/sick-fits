@@ -5,6 +5,7 @@ import Title from "./styles/Title";
 import ItemStyles from "./styles/ItemStyles";
 import PriceTag from "./styles/PriceTag";
 import formatMoney from "../lib/formatMoney";
+import DeleteItem from "./DeleteItem";
 const propTypes = {
   item: PropTypes.object.isRequired
 };
@@ -37,7 +38,7 @@ class Item extends Component {
             <a>Edit</a>
           </Link>
           <button>Add to cart</button>
-          <button>Delete</button>
+          <DeleteItem>Delete</DeleteItem>
         </div>
       </ItemStyles>
     );
