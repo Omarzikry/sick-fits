@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Mutation } from "react-apollo";
 import gql from "graphql-tag";
 import { ALL_ITEMS_QUERY } from "./Items";
+import styled from "styled-components";
 const DELETE_ITEM_MUTAION = gql`
   mutation DELETE_ITEM_MUTAION($id: ID!) {
     deleteItem(id: $id) {
@@ -10,16 +11,23 @@ const DELETE_ITEM_MUTAION = gql`
   }
 `;
 
+const DeleteButton = styled.button`
+  font-weight: 800;
+  color: ${props => props.theme.black};
+  cursor: pointer;
+`;
+
 class DeleteItem extends Component {
   update = (cache, payload) => {
-    // manually update the cache on the client so it matches the server
-    // 1. read the cache for the items we want
+    // manually update the cache on the client, so it matches the server
+    // 1. Read the cache for the items we want
     const data = cache.readQuery({ query: ALL_ITEMS_QUERY });
-    // 2. filter the deleted item out of the page
+    console.log(data, payload);
+    // 2. Filter the deleted itemout of the page
     data.items = data.items.filter(
       item => item.id !== payload.data.deleteItem.id
     );
-    // 3. put the items back
+    // 3. Put the items back!
     cache.writeQuery({ query: ALL_ITEMS_QUERY, data });
   };
   render() {
@@ -30,15 +38,17 @@ class DeleteItem extends Component {
         update={this.update}
       >
         {(deleteItem, { error }) => (
-          <button
+          <DeleteButton
             onClick={() => {
               if (confirm("Are You sure you want to delete this item?")) {
-                deleteItem();
+                deleteItem().catch(err => {
+                  alert(err.message);
+                });
               }
             }}
           >
             {this.props.children}
-          </button>
+          </DeleteButton>
         )}
       </Mutation>
     );
